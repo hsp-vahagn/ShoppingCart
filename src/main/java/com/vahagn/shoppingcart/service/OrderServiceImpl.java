@@ -1,8 +1,10 @@
 package com.vahagn.shoppingcart.service;
 
-import com.vahagn.shoppingcart.jpa.CartEntity;
 import com.vahagn.shoppingcart.jpa.OrderEntity;
 import com.vahagn.shoppingcart.jpa.OrderItemEntity;
+import com.vahagn.shoppingcart.model.Approve;
+import com.vahagn.shoppingcart.model.CartItem;
+import com.vahagn.shoppingcart.repository.CartRepository;
 import com.vahagn.shoppingcart.repository.OrderItemRepository;
 import com.vahagn.shoppingcart.repository.OrderRepository;
 import java.util.ArrayList;
@@ -20,17 +22,20 @@ public class OrderServiceImpl implements OrderService {
   @Autowired
   private OrderItemRepository orderItemRepository;
 
+  @Autowired
+  private CartRepository cartRepository;
+
   @Override
   @Transactional
-  public void createOrder(Long userId, List<CartEntity> items) {
+  public void createOrder(Long userId, List<CartItem> items) {
 
-    final OrderEntity order = new OrderEntity();
+    OrderEntity order = new OrderEntity();
     order.setUserId(userId);
 
-    final List<OrderItemEntity> orderItems = new ArrayList<>();
+    List<OrderItemEntity> orderItems = new ArrayList<>();
 
-    items.forEach( item -> {
-      final OrderItemEntity orderItem = new OrderItemEntity();
+    items.forEach(item -> {
+      OrderItemEntity orderItem = new OrderItemEntity();
 
       orderItem.setOrders(order);
       orderItem.setProductId(item.getProductId());
@@ -40,5 +45,18 @@ public class OrderServiceImpl implements OrderService {
 
     orderRepository.save(order);
     orderItemRepository.saveAll(orderItems);
+
+    cartRepository.deleteAllByUserId(userId);
+
   }
+
+  @Override
+  public OrderEntity updateOrder(Approve approve) {
+    OrderEntity orderEntity = orderRepository.findById(approve.getOrderId()).orElseThrow(RuntimeException::new);
+
+    orderEntity.setStatus(approve.getStatus());
+    orderRepository.save(orderEntity);
+    return orderEntity;
+  }
+
 }

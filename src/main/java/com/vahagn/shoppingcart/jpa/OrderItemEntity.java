@@ -1,5 +1,6 @@
 package com.vahagn.shoppingcart.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class OrderItemEntity {
 
   @ManyToOne
   @JoinColumn(name="order_id", nullable=false)
+  @JsonIgnore
   private OrderEntity orders;
 
   public OrderEntity getOrders() {
