@@ -38,10 +38,6 @@ public class UserEntity {
   @Column(name = "isAdmin", nullable = false)
   private boolean isAdmin;
 
-  @ManyToMany
-  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
-  private List<RoleEntity> roles;
-
   public boolean isAdmin() {
     return isAdmin;
   }
@@ -98,11 +94,4 @@ public class UserEntity {
     this.password = password;
   }
 
-  public List<RoleEntity> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(List<RoleEntity> roles) {
-    this.roles = roles;
-  }
 }
